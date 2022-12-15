@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AudioService } from './audio-service.service';
 declare  var jQuery:  any;
 declare var NDEFReader: any;
+declare var navigator: any;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -44,7 +45,7 @@ export class AppComponent {
       if ('NDEFReader' in window) { 
         alert('starting nfc')
 
-        navigator.permissions.query({ name: "nfc" } as any).then(permissionStatus => {
+        navigator.permissions.query({ name: "nfc" } as any).then((permissionStatus: any) => {
           alert(`NFC user permission: ${permissionStatus.state}`);
           permissionStatus.onchange = _ => {
             alert(`NFC user permission changed: ${permissionStatus.state}`);

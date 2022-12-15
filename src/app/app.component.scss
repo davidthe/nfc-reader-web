@@ -1,0 +1,46 @@
+.scan {
+	width: 10em;
+	text-align: center;
+	padding: 6px 2px;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 50%;
+	margin: auto;
+	border: dashed .25em rgb(90, 85, 85);
+	transform: translate(-50%);
+}
+
+.scan::after {
+	content: '';
+	background: rgb(23, 162, 74);
+	width: 0.25em;
+	height: 3.5em;
+	display: block;
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	margin: auto;
+	opacity: 7;
+	z-index: 2;
+	animation: 2s infinite ease-in-out roll;
+}
+
+.scan img {
+	height: 30px;
+	width: 98%;
+}
+
+@keyframes roll {
+	0% {
+		transform: translateX(-50px);
+	}
+	50% {
+		transform: translateX(50px);
+	}
+	100% {
+		transform: translateX(-50px);
+	}
+}

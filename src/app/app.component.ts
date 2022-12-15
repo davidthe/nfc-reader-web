@@ -24,20 +24,20 @@ export class AppComponent {
       if ('NDEFReader' in window) { 
         alert('starting nfc')
         const nfcPermissionStatus = await navigator.permissions.query({ name: "nfc" } as any);
-
+        const nfc = (window as any).NDEFReader
         /* ... Scan NDEF Tags */ 
         try {
-          const ndef = new NDEFReader();
+          const ndef = new nfc();
           await ndef.scan();
-          console.log("> Scan started");
+          alert("> Scan started");
       
           ndef.addEventListener("readingerror", () => {
-            console.log("Argh! Cannot read data from the NFC tag. Try another one?");
+            alert("Argh! Cannot read data from the NFC tag. Try another one?");
           });
       
           ndef.addEventListener("reading", (a) => {
-            console.log('reading');
-            console.log(a);
+            alert('reading');
+            alert(a);
             this.audioService.getFiles().subscribe(files=>{
               const file = files[Math.floor(Math.random() * 3)];
               console.log(file.url);
@@ -50,7 +50,7 @@ export class AppComponent {
             });
           });
         } catch (error) {
-          console.log("Argh! " + error);
+          alert("Argh! " + error);
         }
 
       // const ndef = new NDEFReader();

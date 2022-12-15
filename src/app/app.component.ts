@@ -19,7 +19,7 @@ export class AppComponent {
   }
 
   async initAndstartScanNFC(){
-    const nfcPermissionStatus = await navigator.permissions.query({ name: "nfc" });
+    const nfcPermissionStatus = await navigator.permissions.query({ name: "nfc" } as any);
 
     try {
       const ndef = new NDEFReader();

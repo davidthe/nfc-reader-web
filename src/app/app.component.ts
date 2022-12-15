@@ -13,7 +13,7 @@ export class AppComponent {
   constructor(public translate: TranslateService,private audioService: AudioService ) {
     translate.addLangs(['en', 'ar', 'he']);
     translate.setDefaultLang('he');
-    // this.initAndstartScanNFC();
+    this.initAndstartScanNFC();
 
     (function ($) {
       $(document).ready(async function(){

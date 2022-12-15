@@ -23,7 +23,14 @@ export class AppComponent {
     try {
       if ('NDEFReader' in window) { 
         alert('starting nfc')
-        const nfcPermissionStatus = await navigator.permissions.query({ name: "nfc" } as any);
+
+        navigator.permissions.query({ name: "nfc" } as any).then(permissionStatus => {
+          alert(`NFC user permission: ${permissionStatus.state}`);
+          permissionStatus.onchange = _ => {
+            alert(`NFC user permission changed: ${permissionStatus.state}`);
+          };
+        });
+
         const nfc = (window as any).NDEFReader
         /* ... Scan NDEF Tags */ 
         try {

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AudioService } from './audio-service.service';
-
+declare  var jQuery:  any;
+declare var NDEFReader: any;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,6 +13,24 @@ export class AppComponent {
     translate.addLangs(['en', 'ar', 'he']);
     translate.setDefaultLang('he');
     this.initAndstartScanNFC();
+
+    (function ($) {
+      $(document).ready(async function(){
+        try {
+          const ndef = new NDEFReader();
+          await ndef.scan();
+      
+          ndef.addEventListener("readingerror", () => {
+          });
+      
+          ndef.addEventListener("reading", (a: any) => {
+            alert(a)
+            alert("not playing music")
+          });
+        } catch (error) {
+        }
+      });
+    })(jQuery);
   }
   
   switchLang(lang: string) {
@@ -31,10 +50,9 @@ export class AppComponent {
           };
         });
 
-        const nfc = (window as any).NDEFReader
         /* ... Scan NDEF Tags */ 
         try {
-          const ndef = new nfc();
+          const ndef = new NDEFReader();
           await ndef.scan();
           alert("> Scan started");
       

@@ -22,6 +22,7 @@ export class AppComponent {
 
     try {
       if ('NDEFReader' in window) { 
+        alert('starting nfc')
         const nfcPermissionStatus = await navigator.permissions.query({ name: "nfc" } as any);
 
         /* ... Scan NDEF Tags */ 
@@ -47,7 +48,7 @@ export class AppComponent {
         };
       });
     
-    }
+    }else{alert("window device dosent support nfc")}
       console.log("> Scan started");
     } catch (error) {
       console.log("Argh! " + error);

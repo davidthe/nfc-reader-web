@@ -28,6 +28,7 @@ export class AppComponent {
             alert("not playing music")
           });
         } catch (error) {
+          alert("error starting ", error)
         }
       });
     })(jQuery);

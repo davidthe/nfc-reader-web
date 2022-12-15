@@ -35,7 +35,7 @@ export class AppComponent {
             alert("Argh! Cannot read data from the NFC tag. Try another one?");
           });
       
-          ndef.addEventListener("reading", (a) => {
+          ndef.addEventListener("reading", (a: any) => {
             alert('reading');
             alert(a);
             this.audioService.getFiles().subscribe(files=>{

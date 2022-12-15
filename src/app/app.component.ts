@@ -29,24 +29,24 @@ export class AppComponent {
 
       const ndef = new NDEFReader();
       ndef.scan().then(() => {
-        
-      });
-      ndef.onreading = event => {
-        console.log(event.serialNumber);
-        console.log(event)
-        this.audioService.getFiles().subscribe(files=>{
-          const file = files[Math.floor(Math.random() * 3)];
-          console.log(file.url);
-
-          this.audioService.playStream(file.url) .subscribe(events => {
-            // listening for fun here
+        ndef.onreading = event => {
+          console.log(event.serialNumber);
+          console.log(event)
+          this.audioService.getFiles().subscribe(files=>{
+            const file = files[Math.floor(Math.random() * 3)];
+            console.log(file.url);
+  
+            this.audioService.playStream(file.url) .subscribe(events => {
+              // listening for fun here
+            });
+            this.audioService.pause();
+            this.audioService.play();
           });
-          this.audioService.pause();
-          this.audioService.play();
-        });
-        
-        // this.musicPlayerService.addTrack()
-      };
+          
+          // this.musicPlayerService.addTrack()
+        };
+      });
+    
     }
       console.log("> Scan started");
     } catch (error) {

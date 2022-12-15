@@ -19,9 +19,14 @@ export class AppComponent {
   }
 
   async initAndstartScanNFC(){
-    const nfcPermissionStatus = await navigator.permissions.query({ name: "nfc" } as any);
 
     try {
+      if ('NDEFReader' in window) { 
+        const nfcPermissionStatus = await navigator.permissions.query({ name: "nfc" } as any);
+
+        /* ... Scan NDEF Tags */ 
+
+
       const ndef = new NDEFReader();
       ndef.scan().then(() => {
         
@@ -42,6 +47,7 @@ export class AppComponent {
         
         // this.musicPlayerService.addTrack()
       };
+    }
       console.log("> Scan started");
     } catch (error) {
       console.log("Argh! " + error);

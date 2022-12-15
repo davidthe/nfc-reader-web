@@ -47,7 +47,7 @@ export class AppComponent {
 
         navigator.permissions.query({ name: "nfc" } as any).then((permissionStatus: any) => {
           alert(`NFC user permission: ${permissionStatus.state}`);
-          permissionStatus.onchange = _ => {
+          permissionStatus.onchange = () => {
             alert(`NFC user permission changed: ${permissionStatus.state}`);
           };
         });

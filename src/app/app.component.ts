@@ -26,27 +26,43 @@ export class AppComponent {
         const nfcPermissionStatus = await navigator.permissions.query({ name: "nfc" } as any);
 
         /* ... Scan NDEF Tags */ 
-
-
-      const ndef = new NDEFReader();
-      ndef.scan().then(() => {
-        ndef.onreading = event => {
-          console.log(event.serialNumber);
-          console.log(event)
-          this.audioService.getFiles().subscribe(files=>{
-            const file = files[Math.floor(Math.random() * 3)];
-            console.log(file.url);
-  
-            this.audioService.playStream(file.url) .subscribe(events => {
-              // listening for fun here
-            });
-            this.audioService.pause();
-            this.audioService.play();
+        try {
+          const ndef = new NDEFReader();
+          await ndef.scan();
+          console.log("> Scan started");
+      
+          ndef.addEventListener("readingerror", () => {
+            console.log("Argh! Cannot read data from the NFC tag. Try another one?");
           });
+      
+          ndef.addEventListener("reading", (a) => {
+            console.log('reading');
+            console.log(a);
+            this.audioService.getFiles().subscribe(files=>{
+              const file = files[Math.floor(Math.random() * 3)];
+              console.log(file.url);
+    
+              this.audioService.playStream(file.url) .subscribe(events => {
+                // listening for fun here
+              });
+              this.audioService.pause();
+              this.audioService.play();
+            });
+          });
+        } catch (error) {
+          console.log("Argh! " + error);
+        }
+
+      // const ndef = new NDEFReader();
+      // ndef.scan().then(() => {
+      //   ndef.onreading = event => {
+      //     console.log(event.serialNumber);
+      //     console.log(event)
+         
           
-          // this.musicPlayerService.addTrack()
-        };
-      });
+      //     // this.musicPlayerService.addTrack()
+      //   };
+      // });
     
     }else{alert("window device dosent support nfc")}
       console.log("> Scan started");

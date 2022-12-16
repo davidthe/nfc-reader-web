@@ -9,13 +9,13 @@ const App = () => {
     try {
          
       const response = await read()
-
       const record = response.message.records[0]
+      alert(record)
 
       const decoder = new TextDecoder('utf-8');
 
       const decodedContent = decoder.decode(record.data)
-
+      alert(decodedContent)
       console.log("DECODED CONTENT:", decodedContent);
 
     } catch (error) {

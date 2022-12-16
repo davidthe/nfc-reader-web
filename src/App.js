@@ -7,7 +7,7 @@ const App = () => {
   // decode an NFC tag containing a single record
   const handleRead = async () => {
     try {
-      
+         
       const response = await read()
 
       const record = response.message.records[0]

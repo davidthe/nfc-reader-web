@@ -2,7 +2,7 @@ import React from 'react';
 import { useNfc } from 'use-nfc-hook';
 
 const App = () => {
-  const { isNDEFAvailable, permission, read, abortReadCtrl, write } = useNfc()
+  const { isNDEFAvailable, permission, read } = useNfc()
   
   // decode an NFC tag containing a single record
   const handleRead = async () => {

@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DialogService } from '@ngneat/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { Accessibility } from 'accessibility';
+import { StartingDialogComponent } from './app.starting-dialog';
 import { AudioService } from './audio-service.service';
 
 @Component({
@@ -10,10 +13,31 @@ import { AudioService } from './audio-service.service';
 })
 export class AppComponent {
   isScanning = false;
+  private dialog = inject(DialogService);
 
-  constructor(public translate: TranslateService,private audioService: AudioService , private snackBar: MatSnackBar) {
+  constructor(
+    public translate: TranslateService,
+    private audioService: AudioService ,
+    private snackBar: MatSnackBar,
+    ) {
     translate.addLangs(['en', 'ar', 'he']);
     translate.setDefaultLang('he');
+    window.addEventListener('load', function() { new Accessibility(); }, false);
+
+    translate.get('please make sure to give permission for NFC scanning').subscribe((res: string) => {
+      const dialogRef = this.dialog.open(StartingDialogComponent, {
+        // data is typed based on the passed generic
+        data: {
+          title: res,
+        },
+      });
+
+      dialogRef.afterClosed$.subscribe((result) => {
+        this.start();
+      });
+    });
+
+
     // this.initAndstartScanNFC();
   }
 
@@ -33,28 +57,28 @@ export class AppComponent {
       });
 
       ndef.addEventListener("reading", ({ message, serialNumber }: { message: any, serialNumber: string }) => {
-
-        for (const record of message.records) {
-          this.notify("Record id:    " + record.id);
-          switch (record.recordType) {
-            case "text":
-              const textDecoder = new TextDecoder(record.encoding);
-              this.notify(`Scanned: ${textDecoder.decode(record.data)}`);
-              break;
-            case "url":
-              // TODO: Read URL record with record data.
-              break;
-            default:
-            // TODO: Handle other records with record data.
-          }
-        }
+        this.playMusic();
       });
     } catch (error) {
       this.isScanning = false;
     }
   }
 
+  private playMusic(){
+    this.audioService.getFiles().subscribe(files => {
+      const file = files[0];
+      console.log(file.url);
+
+      this.audioService.playStream(file.url).subscribe(events => {
+        // listening for fun here
+      });
+      this.audioService.pause();
+      this.audioService.play();
+
+    });
+  }
+
   notify(message: string) {
-    this.snackBar.open(message, 'OK');
+    this.snackBar.open(message, 'OK', {duration: 2000});
   }
 }

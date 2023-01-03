@@ -3,8 +3,8 @@
 	text-align: center;
 	padding: 6px 2px;
 	position: absolute;
-	left: 0;
-	right: 0;
+	left: 50%;
+	right: 50%;
 	top: 50%;
 	margin: auto;
 	border: dashed .25em rgb(90, 85, 85);
@@ -43,4 +43,7 @@
 	100% {
 		transform: translateX(-50px);
 	}
+}
+mat-card {
+  width: 300px
 }

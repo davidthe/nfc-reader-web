@@ -1,100 +1,60 @@
 import { Component } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { AudioService } from './audio-service.service';
-declare  var jQuery:  any;
-declare var NDEFReader: any;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  constructor(public translate: TranslateService,private audioService: AudioService ) {
+  isScanning = false;
+
+  constructor(public translate: TranslateService,private audioService: AudioService , private snackBar: MatSnackBar) {
     translate.addLangs(['en', 'ar', 'he']);
     translate.setDefaultLang('he');
-    this.initAndstartScanNFC();
-
-    (function ($) {
-      $(document).ready(async function(){
-        try {
-          const ndef = new NDEFReader();
-          await ndef.scan();
-      
-          ndef.addEventListener("readingerror", () => {
-          });
-      
-          ndef.addEventListener("reading", (a: any) => {
-            alert(a)
-            alert("not playing music")
-          });
-        } catch (error) {
-          alert("error starting "+ error)
-        }
-      });
-    })(jQuery);
+    // this.initAndstartScanNFC();
   }
-  
+
   switchLang(lang: string) {
     this.translate.use(lang);
   }
 
-  async initAndstartScanNFC(){
-
+  async start() {
     try {
-      if ('NDEFReader' in window) { 
-        alert('starting nfc')
+      const ndef = new (window as any).NDEFReader();
+      this.isScanning = true;
+      await ndef.scan();
+      this.notify("Scanning...");
 
-        navigator.permissions.query({ name: "nfc" } as any).then(permissionStatus => {
-          alert(`NFC user permission: ${permissionStatus.state}`);
-          permissionStatus.onchange = _ => {
-            alert(`NFC user permission changed: ${permissionStatus.state}`);
-          };
-        });
+      ndef.addEventListener("readingerror", () => {
+        this.notify(`Error reading tag`);
+      });
 
-        /* ... Scan NDEF Tags */ 
-        try {
-          const ndef = new NDEFReader();
-          await ndef.scan();
-          alert("> Scan started");
-      
-          ndef.addEventListener("readingerror", () => {
-            alert("Argh! Cannot read data from the NFC tag. Try another one?");
-          });
-      
-          ndef.addEventListener("reading", (a: any) => {
-            alert('reading');
-            alert(a);
-            this.audioService.getFiles().subscribe(files=>{
-              const file = files[Math.floor(Math.random() * 3)];
-              console.log(file.url);
-    
-              this.audioService.playStream(file.url) .subscribe(events => {
-                // listening for fun here
-              });
-              this.audioService.pause();
-              this.audioService.play();
-            });
-          });
-        } catch (error) {
-          alert("Argh! " + error);
+      ndef.addEventListener("reading", ({ message, serialNumber }: { message: any, serialNumber: string }) => {
+
+        for (const record of message.records) {
+          this.notify("Record id:    " + record.id);
+          switch (record.recordType) {
+            case "text":
+              const textDecoder = new TextDecoder(record.encoding);
+              this.notify(`Scanned: ${textDecoder.decode(record.data)}`);
+              break;
+            case "url":
+              // TODO: Read URL record with record data.
+              break;
+            default:
+            // TODO: Handle other records with record data.
+          }
         }
-
-      // const ndef = new NDEFReader();
-      // ndef.scan().then(() => {
-      //   ndef.onreading = event => {
-      //     console.log(event.serialNumber);
-      //     console.log(event)
-         
-          
-      //     // this.musicPlayerService.addTrack()
-      //   };
-      // });
-    
-    }else{alert("window device dosent support nfc")}
-      console.log("> Scan started");
+      });
     } catch (error) {
-      console.log("Argh! " + error);
-      alert("your device dosent support nfc")
+      this.isScanning = false;
     }
+  }
+
+  notify(message: string) {
+    this.snackBar.open(message, 'OK');
   }
 }

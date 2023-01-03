@@ -57,6 +57,8 @@ export class AppComponent {
       });
 
       ndef.addEventListener("reading", ({ message, serialNumber }: { message: any, serialNumber: string }) => {
+        //todo make logic here
+
         this.playMusic();
       });
     } catch (error) {
